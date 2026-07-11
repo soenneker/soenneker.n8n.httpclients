@@ -17,7 +17,7 @@ namespace Soenneker.N8n.HttpClients;
 public sealed class N8nOpenApiHttpClient : IN8nOpenApiHttpClient
 {
     private readonly IHttpClientCache _httpClientCache;
-    private readonly string _apiKey;
+    private readonly IConfiguration _configuration;
     private readonly string _baseUrl;
     private readonly string _authHeaderName;
     private readonly string _authHeaderValueTemplate;
@@ -28,7 +28,7 @@ public sealed class N8nOpenApiHttpClient : IN8nOpenApiHttpClient
     public N8nOpenApiHttpClient(IHttpClientCache httpClientCache, IConfiguration config)
     {
         _httpClientCache = httpClientCache;
-        _apiKey = config.GetValueStrict<string>("N8N:ApiKey");
+        _configuration = config;
         _baseUrl = config["N8n:ClientBaseUrl"] ?? _prodBaseUrl;
         _authHeaderName = config["N8n:AuthHeaderName"] ?? "X-N8N-API-KEY";
         _authHeaderValueTemplate = config["N8n:AuthHeaderValueTemplate"] ?? "{token}";
@@ -36,7 +36,7 @@ public sealed class N8nOpenApiHttpClient : IN8nOpenApiHttpClient
 
     public ValueTask<HttpClient> Get(CancellationToken cancellationToken = default)
     {
-        return Get(_apiKey, _baseUrl, cancellationToken);
+        return Get(_configuration.GetValueStrict<string>("N8N:ApiKey"), _baseUrl, cancellationToken);
     }
 
     public ValueTask<HttpClient> Get(string apiKey, CancellationToken cancellationToken = default)
