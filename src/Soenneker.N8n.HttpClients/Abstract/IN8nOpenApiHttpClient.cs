@@ -6,15 +6,15 @@ using System.Threading;
 namespace Soenneker.N8n.HttpClients.Abstract;
 
 /// <summary>
-/// A .NET thread-safe singleton HttpClient for 
+/// Provides cached, authenticated HTTP clients for one or more n8n servers.
 /// </summary>
-public interface IN8nOpenApiHttpClient: IDisposable, IAsyncDisposable
+public interface IN8nOpenApiHttpClient : IDisposable, IAsyncDisposable
 {
     /// <summary>
-    /// Gets the value.
+    /// Gets a client using the configured API key and base URL.
     /// </summary>
     /// <param name="cancellationToken">The cancellation token.</param>
-    /// <returns>A task containing the result of the operation.</returns>
+    /// <returns>The configured client.</returns>
     ValueTask<HttpClient> Get(CancellationToken cancellationToken = default);
 
     /// <summary>Gets a client for a specific API key using the configured base URL.</summary>
