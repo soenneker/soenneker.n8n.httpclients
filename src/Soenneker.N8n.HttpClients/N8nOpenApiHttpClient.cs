@@ -13,6 +13,7 @@ using Soenneker.Utils.HttpClientCache.Abstract;
 
 namespace Soenneker.N8n.HttpClients;
 
+/// <inheritdoc cref="IN8nOpenApiHttpClient" />
 public sealed class N8nOpenApiHttpClient : IN8nOpenApiHttpClient
 {
     private readonly IHttpClientCache _httpClientCache;
