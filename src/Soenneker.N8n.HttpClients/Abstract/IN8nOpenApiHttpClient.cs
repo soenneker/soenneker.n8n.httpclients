@@ -6,7 +6,10 @@ using System.Threading;
 namespace Soenneker.N8n.HttpClients.Abstract;
 
 /// <summary>
-/// Provides cached, authenticated HTTP clients for one or more n8n servers.
+/// Provides cached, authenticated HTTP clients for n8n servers.
+/// Destinations are restricted to public addresses at socket connection time unless the application explicitly
+/// enables N8n:AllowPrivateNetworkAccess. The policy is captured when the provider is constructed.
+/// Redirects are disabled in both modes to prevent credential forwarding.
 /// </summary>
 public interface IN8nOpenApiHttpClient : IDisposable, IAsyncDisposable
 {

@@ -1,7 +1,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Soenneker.N8n.HttpClients.Abstract;
-using Soenneker.Utils.HttpClientCache.Registrar;
+using Soenneker.Utils.HttpClientCache.Ssrf.Registrars;
 
 namespace Soenneker.N8n.HttpClients.Registrars;
 
@@ -15,7 +15,7 @@ public static class N8nOpenApiHttpClientRegistrar
     /// </summary>
     public static IServiceCollection AddN8nOpenApiHttpClientAsSingleton(this IServiceCollection services)
     {
-        services.AddHttpClientCacheAsSingleton()
+        services.AddSsrfHttpClientCacheAsSingleton()
                 .TryAddSingleton<IN8nOpenApiHttpClient, N8nOpenApiHttpClient>();
 
         return services;
@@ -26,7 +26,7 @@ public static class N8nOpenApiHttpClientRegistrar
     /// </summary>
     public static IServiceCollection AddN8nOpenApiHttpClientAsScoped(this IServiceCollection services)
     {
-        services.AddHttpClientCacheAsSingleton()
+        services.AddSsrfHttpClientCacheAsSingleton()
                 .TryAddScoped<IN8nOpenApiHttpClient, N8nOpenApiHttpClient>();
 
         return services;

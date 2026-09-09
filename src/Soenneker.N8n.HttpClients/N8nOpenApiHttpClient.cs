@@ -10,10 +10,10 @@ using Soenneker.Extensions.Configuration;
 using Soenneker.Hashing.XxHash;
 using Soenneker.N8n.HttpClients.Abstract;
 using Soenneker.Utils.HttpClientCache.Abstract;
+using Soenneker.Utils.HttpClientCache.Ssrf.Abstract;
 
 namespace Soenneker.N8n.HttpClients;
 
-/// <inheritdoc cref="IN8nOpenApiHttpClient" />
 public sealed class N8nOpenApiHttpClient : IN8nOpenApiHttpClient
 {
     private readonly IHttpClientCache _httpClientCache;
@@ -24,9 +24,9 @@ public sealed class N8nOpenApiHttpClient : IN8nOpenApiHttpClient
     private readonly ConcurrentDictionary<string, byte> _clientIds = new();
     private readonly string _providerId = Guid.NewGuid().ToString("N");
 
-    public N8nOpenApiHttpClient(IHttpClientCache httpClientCache, IConfiguration config)
+    public N8nOpenApiHttpClient(IHttpClientCache httpClientCache, ISsrfHttpClientCache ssrfHttpClientCache, IConfiguration config)
     {
-        _httpClientCache = httpClientCache;
+        _httpClientCache = config.GetValue<bool>("N8n:AllowPrivateNetworkAccess") ? httpClientCache : ssrfHttpClientCache;
         _configuration = config;
         _baseUrl = config["N8n:ClientBaseUrl"];
         _authHeaderName = config["N8n:AuthHeaderName"] ?? "X-N8N-API-KEY";
@@ -60,6 +60,7 @@ public sealed class N8nOpenApiHttpClient : IN8nOpenApiHttpClient
                 return new HttpClientOptions
                 {
                     BaseAddress = state.baseUri,
+                    AllowAutoRedirect = false,
                     DefaultRequestHeaders = new Dictionary<string, string>
                     {
                         {state.authHeaderName, authHeaderValue},

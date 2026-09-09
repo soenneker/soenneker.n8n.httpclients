@@ -43,3 +43,29 @@ Use `Get(apiKey, baseUrl)` to connect to another n8n server. Equivalent connecti
 The default authentication header is `X-N8N-API-KEY: {token}`. `N8n:AuthHeaderName` and `N8n:AuthHeaderValueTemplate` can override it for a compatible gateway.
 
 Do not dispose a returned `HttpClient`; the registered provider owns it and removes it from the cache when disposed.
+
+## Network access policy
+
+By default, clients use `ISsrfHttpClientCache`: DNS is resolved and checked when
+opening each socket, and the connection uses those validated addresses. Private,
+loopback, and reserved addresses are blocked.
+
+Applications that intentionally connect to private/self-hosted n8n instances can
+opt in through trusted application configuration:
+
+```json
+{
+  "N8n": {
+    "AllowPrivateNetworkAccess": true
+  }
+}
+```
+
+This selects ordinary `IHttpClientCache` for that provider. Omit the setting or
+set it to `false` for public-only access. The policy is read when the provider is
+constructed and applies to every connection it creates; do not populate it from
+user-supplied connection data. Enabling it permits all destinations, not just a
+particular private host.
+
+Automatic redirects remain disabled in both modes so the API-key header cannot
+be forwarded by a redirect. Configure the final n8n base URL directly.
