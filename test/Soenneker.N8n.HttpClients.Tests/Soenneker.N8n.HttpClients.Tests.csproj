@@ -25,4 +25,7 @@
     <ItemGroup>
         <ProjectReference Include="..\..\src\Soenneker.N8n.HttpClients\Soenneker.N8n.HttpClients.csproj" />
     </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="AwesomeAssertions" Version="9.6.0" />
+    </ItemGroup>
 </Project>
