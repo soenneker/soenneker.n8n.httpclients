@@ -20,7 +20,7 @@ public sealed class N8nNetworkPolicyTests
     [Test]
     [Arguments(null)]
     [Arguments("false")]
-    public async Task Default_and_explicit_public_only_block_loopback(string? setting)
+    public async ValueTask Default_and_explicit_public_only_block_loopback(string? setting)
     {
         await using ServiceProvider services = CreateServices(setting);
         IN8nOpenApiHttpClient provider = services.GetRequiredService<IN8nOpenApiHttpClient>();
@@ -32,7 +32,7 @@ public sealed class N8nNetworkPolicyTests
     [Test]
     [Arguments(false)]
     [Arguments(true)]
-    public async Task Private_access_connects_locally_but_never_follows_redirects(bool redirect)
+    public async ValueTask Private_access_connects_locally_but_never_follows_redirects(bool redirect)
     {
         using var timeout = new CancellationTokenSource(TimeSpan.FromSeconds(10));
         using var listener = new TcpListener(IPAddress.Loopback, 0);

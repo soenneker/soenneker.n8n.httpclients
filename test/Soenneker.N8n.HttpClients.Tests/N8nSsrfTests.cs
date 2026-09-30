@@ -19,7 +19,7 @@ namespace Soenneker.N8n.HttpClients.Tests;
 public sealed class N8nSsrfTests
 {
     [Test]
-    public async Task Public_to_private_redirect_does_not_forward_credentials()
+    public async ValueTask Public_to_private_redirect_does_not_forward_credentials()
     {
         using var timeout = new CancellationTokenSource(TimeSpan.FromSeconds(10));
         using var listener = new TcpListener(IPAddress.Loopback, 0);
@@ -51,7 +51,7 @@ public sealed class N8nSsrfTests
     }
 
     [Test]
-    public async Task Public_preflight_does_not_authorize_private_connection_time_dns()
+    public async ValueTask Public_preflight_does_not_authorize_private_connection_time_dns()
     {
         var validator = new SsrfIpAddressValidator(NullLogger<SsrfIpAddressValidator>.Instance);
         validator.Validate(IPAddress.Parse("8.8.8.8")).Should().BeTrue();
