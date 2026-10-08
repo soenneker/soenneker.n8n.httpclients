@@ -20,19 +20,19 @@ public sealed class N8nNetworkPolicyTests
     [Test]
     [Arguments(null)]
     [Arguments("false")]
-    public async ValueTask Default_and_explicit_public_only_block_loopback(string? setting)
+    public async ValueTask Default_and_explicit_public_only_block_loopback(string? setting, CancellationToken cancellationToken)
     {
         await using ServiceProvider services = CreateServices(setting);
         IN8nOpenApiHttpClient provider = services.GetRequiredService<IN8nOpenApiHttpClient>();
-        HttpClient client = await provider.Get("test-secret", "http://127.0.0.1:1");
-        Func<Task> send = () => client.GetAsync("/api/v1/workflows");
+        HttpClient client = await provider.Get("test-secret", "http://127.0.0.1:1", cancellationToken: cancellationToken);
+        Func<Task> send = () => client.GetAsync("/api/v1/workflows", cancellationToken: cancellationToken);
         await send.Should().ThrowAsync<HttpRequestException>().WithMessage("*blocked*");
     }
 
     [Test]
     [Arguments(false)]
     [Arguments(true)]
-    public async ValueTask Private_access_connects_locally_but_never_follows_redirects(bool redirect)
+    public async ValueTask Private_access_connects_locally_but_never_follows_redirects(bool redirect, CancellationToken cancellationToken)
     {
         using var timeout = new CancellationTokenSource(TimeSpan.FromSeconds(10));
         using var listener = new TcpListener(IPAddress.Loopback, 0);
@@ -43,7 +43,7 @@ public sealed class N8nNetworkPolicyTests
         int destinationPort = ((IPEndPoint)destination.LocalEndpoint).Port;
         await using ServiceProvider services = CreateServices("true");
         IN8nOpenApiHttpClient provider = services.GetRequiredService<IN8nOpenApiHttpClient>();
-        HttpClient client = await provider.Get("test-secret", $"http://127.0.0.1:{port}");
+        HttpClient client = await provider.Get("test-secret", $"http://127.0.0.1:{port}", cancellationToken: cancellationToken);
         Task server = Respond();
         using HttpResponseMessage response = await client.GetAsync("/api/v1/workflows", timeout.Token);
         response.StatusCode.Should().Be(redirect ? HttpStatusCode.Redirect : HttpStatusCode.OK);

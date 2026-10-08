@@ -19,7 +19,7 @@ namespace Soenneker.N8n.HttpClients.Tests;
 public sealed class N8nSsrfTests
 {
     [Test]
-    public async ValueTask Public_to_private_redirect_does_not_forward_credentials()
+    public async ValueTask Public_to_private_redirect_does_not_forward_credentials(CancellationToken cancellationToken)
     {
         using var timeout = new CancellationTokenSource(TimeSpan.FromSeconds(10));
         using var listener = new TcpListener(IPAddress.Loopback, 0);
@@ -29,7 +29,7 @@ public sealed class N8nSsrfTests
         transport.PublicPort = ((IPEndPoint)listener.LocalEndpoint).Port;
         using var cache = new SsrfHttpClientCache(inner, new SsrfIpAddressValidator(NullLogger<SsrfIpAddressValidator>.Instance));
         using var provider = new N8nOpenApiHttpClient(inner, cache, new ConfigurationBuilder().Build());
-        HttpClient client = await provider.Get("test-secret", "http://public.example");
+        HttpClient client = await provider.Get("test-secret", "http://public.example", cancellationToken: cancellationToken);
         Task server = Respond();
         using HttpResponseMessage response = await client.GetAsync("/api/v1/workflows", timeout.Token);
         response.StatusCode.Should().Be(HttpStatusCode.Redirect);
@@ -51,7 +51,7 @@ public sealed class N8nSsrfTests
     }
 
     [Test]
-    public async ValueTask Public_preflight_does_not_authorize_private_connection_time_dns()
+    public async ValueTask Public_preflight_does_not_authorize_private_connection_time_dns(CancellationToken cancellationToken)
     {
         var validator = new SsrfIpAddressValidator(NullLogger<SsrfIpAddressValidator>.Instance);
         validator.Validate(IPAddress.Parse("8.8.8.8")).Should().BeTrue();
@@ -61,8 +61,8 @@ public sealed class N8nSsrfTests
         transport.PublicPort = 443;
         using var cache = new SsrfHttpClientCache(inner, validator);
         using var provider = new N8nOpenApiHttpClient(inner, cache, new ConfigurationBuilder().Build());
-        HttpClient client = await provider.Get("test-secret", "https://public.example");
-        Func<Task> send = () => client.GetAsync("/api/v1/workflows");
+        HttpClient client = await provider.Get("test-secret", "https://public.example", cancellationToken: cancellationToken);
+        Func<Task> send = () => client.GetAsync("/api/v1/workflows", cancellationToken: cancellationToken);
         await send.Should().ThrowAsync<HttpRequestException>().WithMessage("*blocked*");
         transport.Connections.Should().Be(1);
     }
