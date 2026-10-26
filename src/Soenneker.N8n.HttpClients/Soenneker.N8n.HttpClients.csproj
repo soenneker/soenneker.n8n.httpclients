@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
-        <TargetFramework>net10.0</TargetFramework>
+        <TargetFramework>net11.0</TargetFramework>
         <IsAotCompatible>true</IsAotCompatible>
         <EnableConfigurationBindingGenerator>true</EnableConfigurationBindingGenerator>
         <Nullable>enable</Nullable>
@@ -10,7 +10,7 @@
 
     <PropertyGroup>
         <Description>Provides cached, authenticated HTTP clients for one or more n8n servers.</Description>
-        <Version Condition="'$(BUILD_VERSION)' == ''">4.0.0</Version>
+        <Version Condition="'$(BUILD_VERSION)' == ''">11.0.0</Version>
         <Version Condition="'$(BUILD_VERSION)' != ''">$(BUILD_VERSION)</Version>
         <AssemblyName>Soenneker.N8n.HttpClients</AssemblyName>
         <PackageId>Soenneker.N8n.HttpClients</PackageId>
@@ -44,8 +44,8 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Soenneker.Extensions.Configuration" Version="4.0.910" />
-        <PackageReference Include="Soenneker.Hashing.XxHash" Version="4.0.121" />
+        <PackageReference Include="Soenneker.Extensions.Configuration" Version="11.0.913" />
+        <PackageReference Include="Soenneker.Hashing.XxHash" Version="4.0.122" />
         <PackageReference Include="Soenneker.Utils.HttpClientCache.Ssrf" Version="4.0.91" />
     </ItemGroup>
 </Project>
