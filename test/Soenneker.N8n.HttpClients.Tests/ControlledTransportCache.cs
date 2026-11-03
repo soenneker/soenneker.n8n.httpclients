@@ -34,7 +34,7 @@ public class ControlledTransportCache : DispatchProxy
                     // endpoint now resolves locally, as with a changed DNS answer.
                     return await guardedConnect((SocketsHttpConnectionContext)Activator.CreateInstance(typeof(SocketsHttpConnectionContext),
                         BindingFlags.Instance | BindingFlags.NonPublic, null,
-                        new object[] { new DnsEndPoint("localhost", PublicPort), context.InitialRequestMessage }, null)!, token);
+                        new object[] { new DnsEndPoint("localhost", PublicPort), context.InitialRequestMessage, 0L }, null)!, token);
                 }
                 if (context.DnsEndPoint.Host == "public.example")
                 {
